@@ -120,7 +120,7 @@ class MNISTDataModule(LightningDataModule):
                 raise RuntimeError(
                     f"Batch size ({self.hparams.batch_size}) is not divisible by the number of devices ({self.trainer.world_size})."
                 )
-            self.batch_size_per_device = self.hparams.batch_size // self.trainer.world_size
+            self.batch_size_per_device = self.hparams.batch_size // self.trainer.world_size  # self.trainer.world_size is the number of devices, it's assigned automaticallyafter trainner.fit(datamodule)
 
         # load and split datasets only if not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
@@ -131,7 +131,7 @@ class MNISTDataModule(LightningDataModule):
                 dataset=dataset,
                 lengths=self.hparams.train_val_test_split,
                 generator=torch.Generator().manual_seed(42),
-            )
+            )  # random_split is used to split the dataset into train, validation and test sets based on the lengths. lengths should has format like (55000, 5000, 10000)
 
     def train_dataloader(self) -> DataLoader[Any]:
         """Create and return the train dataloader.
