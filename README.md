@@ -424,11 +424,17 @@ python train.py -m seed=1,2,3,4,5 trainer.deterministic=True logger=csv tags=["b
 <summary><b>Use Hydra tab completion</b></summary>
 
 > **Note**: Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read the [docs](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
+```
+echo $SHELL  # check your shell, eg. zsh
+eval "$(python src/train.py -sc install=zsh)"  # change zsh based on your shell
+autoload -Uz compinit && compinit
+```
 
 </details>
 
 <details>
 <summary><b>Apply pre-commit hooks</b></summary>
+
 
 ```bash
 pre-commit run -a
