@@ -178,6 +178,7 @@ python train.py trainer.max_epochs=20 model.optimizer.lr=1e-4
 ```bash
 python train.py +model.new_param="owo"
 ```
++ here is used to add new parameters to the config
 
 </details>
 
