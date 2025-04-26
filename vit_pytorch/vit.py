@@ -71,7 +71,7 @@ class Transformer(nn.Module):
             self.layers.append(nn.ModuleList([
                 Attention(dim, heads = heads, dim_head = dim_head, dropout = dropout),
                 FeedForward(dim, mlp_dim, dropout = dropout)
-            ]))
+            ])) # add ModuleList to ModuleList to make it look more clear
 
     def forward(self, x):
         for attn, ff in self.layers:
@@ -111,17 +111,17 @@ class ViT(nn.Module):
         self.mlp_head = nn.Linear(dim, num_classes)
 
     def forward(self, img):
-        x = self.to_patch_embedding(img)
+        x = self.to_patch_embedding(img)  # img: [b, c, h, w] -> x: [b, n, d]
         b, n, _ = x.shape
 
-        cls_tokens = repeat(self.cls_token, '1 1 d -> b 1 d', b = b)
+        cls_tokens = repeat(self.cls_token, '1 1 d -> b 1 d', b = b)  # prepare cls token
         x = torch.cat((cls_tokens, x), dim=1)
-        x += self.pos_embedding[:, :(n + 1)]
+        x += self.pos_embedding[:, :(n + 1)]  # use learnable positional embedding
         x = self.dropout(x)
 
-        x = self.transformer(x)
+        x = self.transformer(x)  # [b, n, d] -> [b, n, d]
 
-        x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]
+        x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]  # [b, n, d] -> [b, d], use cls token (first token) for classification if not using mean pooling
 
         x = self.to_latent(x)
         return self.mlp_head(x)
